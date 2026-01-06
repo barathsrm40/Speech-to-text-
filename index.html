@@ -1,16 +1,34 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Speech to Text</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Speech to Text Web App</h2>
-<button onclick="startRecording()">🎤 Start</button>
-<button onclick="stopRecording()">🛑 Stop</button>
+<div class="app">
+    <h1>🎤 Speech to Text</h1>
+    <p class="subtitle">Speak and convert your voice into text</p>
 
-<textarea id="output" placeholder="Your speech will appear here..."></textarea>
+    <select id="language">
+        <option value="en-IN">English (India)</option>
+        <option value="ta-IN">Tamil (India)</option>
+        <option value="hi-IN">Hindi (India)</option>
+    </select>
+
+    <div class="buttons">
+        <button id="startBtn">Start</button>
+        <button id="stopBtn" disabled>Stop</button>
+        <button id="clearBtn">Clear</button>
+    </div>
+
+    <textarea id="output" placeholder="Your speech will appear here..."></textarea>
+
+    <p id="status">Status: Idle</p>
+</div>
 
 <script src="script.js"></script>
 </body>
