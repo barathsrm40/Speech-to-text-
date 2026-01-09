@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Speech & Translation Tool</title>
 
@@ -11,34 +11,35 @@
 </head>
 <body>
 
+<!-- HERO -->
 <section class="hero">
   <h1>Speech to Text & Translation</h1>
   <p>Fast • Free • Professional • Browser Based</p>
   <a href="#tools" class="btn">Use Tools</a>
 </section>
 
+<!-- TOOLS -->
 <section class="section tools-top" id="tools">
   <h2>Tools</h2>
 
   <!-- SPEECH -->
   <div class="box">
     <h3>🎤 Speech to Text</h3>
-    <p id="status" class="status">Idle</p>
+
+    <p id="listeningStatus" class="status">Idle</p>
+
     <textarea id="speechText" placeholder="Your speech text will appear here..." readonly></textarea>
 
     <div class="row">
       <button id="startSpeech">Start</button>
       <button id="stopSpeech">Stop</button>
       <button id="resetSpeech">Reset</button>
-    </div>
-
-    <div class="row">
       <button id="speechTxt">TXT</button>
       <button id="speechPdf">PDF</button>
     </div>
   </div>
 
-  <!-- TRANSLATION -->
+  <!-- TRANSLATION (SEPARATE) -->
   <div class="box">
     <h3>🌐 Translation</h3>
 
@@ -49,12 +50,16 @@
         <option value="en">English</option>
         <option value="ta">Tamil</option>
         <option value="hi">Hindi</option>
+        <option value="fr">French</option>
+        <option value="es">Spanish</option>
       </select>
 
       <select id="toLang">
         <option value="ta">Tamil</option>
         <option value="en">English</option>
         <option value="hi">Hindi</option>
+        <option value="fr">French</option>
+        <option value="es">Spanish</option>
       </select>
 
       <button id="translateBtn">Translate</button>
