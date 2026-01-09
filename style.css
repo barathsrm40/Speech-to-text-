@@ -10,18 +10,16 @@ body {
 }
 
 .hero {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
   color: white;
   padding: 80px 20px;
   text-align: center;
 }
 
 .btn {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 12px 30px;
   background: white;
   color: #333;
+  padding: 12px 28px;
   border-radius: 30px;
   text-decoration: none;
   font-weight: 600;
@@ -29,67 +27,70 @@ body {
 
 .section {
   padding: 40px 20px;
-  max-width: 900px;
+  max-width: 1000px;
   margin: auto;
 }
 
-h2, h3 {
+.tools-top {
+  margin-top: -40px;
+}
+
+h2 {
   text-align: center;
 }
 
 .box {
   background: white;
   padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  margin-bottom: 25px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
 }
 
 textarea {
   width: 100%;
   min-height: 120px;
+  padding: 10px;
   margin: 10px 0;
-  padding: 12px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #ccc;
-  resize: none;
 }
 
 .row {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 10px;
 }
 
 button, select {
   flex: 1;
   padding: 10px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
-  background: #667eea;
+  background: #4facfe;
   color: white;
   cursor: pointer;
 }
 
-button:hover {
-  opacity: 0.9;
-}
-
-.danger {
-  background: #e74c3c;
-}
-
 .status {
-  text-align: center;
   font-weight: 600;
-  color: #666;
+  margin-bottom: 8px;
+}
+
+.listening {
+  color: green;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.5; }
 }
 
 footer {
   background: #333;
   color: white;
-  padding: 15px;
   text-align: center;
+  padding: 15px;
 }
 
 @media (max-width: 600px) {
