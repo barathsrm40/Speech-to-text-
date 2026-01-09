@@ -3,12 +3,27 @@
 const speechText = document.getElementById("speechText");
 const statusText = document.getElementById("listeningStatus");
 
+const startBtn = document.getElementById("startSpeech");
+const stopBtn = document.getElementById("stopSpeech");
+const resetBtn = document.getElementById("resetSpeech");
+
+const speechTxtBtn = document.getElementById("speechTxt");
+const speechPdfBtn = document.getElementById("speechPdf");
+
+const translateBtn = document.getElementById("translateBtn");
+const inputText = document.getElementById("inputText");
+const outputText = document.getElementById("outputText");
+const fromLang = document.getElementById("fromLang");
+const toLang = document.getElementById("toLang");
+
+const transTxtBtn = document.getElementById("transTxt");
+const transPdfBtn = document.getElementById("transPdf");
+
 let recognition;
 let finalTranscript = "";
 let isUserStopped = false;
 
 if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
-
   const SpeechRecognition =
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -24,47 +39,40 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
 
   recognition.onend = () => {
     if (!isUserStopped) {
-      recognition.start(); // auto-restart
+      recognition.start();
     } else {
       statusText.textContent = "Stopped";
       statusText.style.color = "red";
     }
   };
 
-  recognition.onerror = (e) => {
-    console.warn("Speech error:", e.error);
-  };
-
   recognition.onresult = (event) => {
     let interim = "";
-
     for (let i = event.resultIndex; i < event.results.length; i++) {
-      const text = event.results[i][0].transcript;
-
+      const txt = event.results[i][0].transcript;
       if (event.results[i].isFinal) {
-        finalTranscript += text + " ";
+        finalTranscript += txt + " ";
       } else {
-        interim = text;
+        interim = txt;
       }
     }
-
     speechText.value = finalTranscript + interim;
   };
 }
 
-/* BUTTONS */
+/* BUTTON EVENTS */
 
-startSpeech.onclick = () => {
+startBtn.onclick = () => {
   isUserStopped = false;
   try { recognition.start(); } catch {}
 };
 
-stopSpeech.onclick = () => {
+stopBtn.onclick = () => {
   isUserStopped = true;
   recognition.stop();
 };
 
-resetSpeech.onclick = () => {
+resetBtn.onclick = () => {
   finalTranscript = "";
   speechText.value = "";
   statusText.textContent = "Idle";
@@ -74,20 +82,18 @@ resetSpeech.onclick = () => {
 /* ================= TRANSLATION ================= */
 
 translateBtn.onclick = async () => {
-  const text = inputText.value.trim();
-  if (!text) return alert("Enter text");
-
+  if (!inputText.value.trim()) return alert("Enter text");
   outputText.value = "Translating...";
 
   try {
     const res = await fetch(
-      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang.value}|${toLang.value}`
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(inputText.value)}&langpair=${fromLang.value}|${toLang.value}`
     );
     const data = await res.json();
     outputText.value = data.responseData.translatedText;
   } catch {
-    alert("Translation failed");
     outputText.value = "";
+    alert("Translation failed");
   }
 };
 
@@ -110,7 +116,7 @@ function downloadPDF(text, name) {
   doc.save(name);
 }
 
-speechTxt.onclick = () => downloadTXT(speechText.value, "speech.txt");
-speechPdf.onclick = () => downloadPDF(speechText.value, "speech.pdf");
-transTxt.onclick = () => downloadTXT(outputText.value, "translation.txt");
-transPdf.onclick = () => downloadPDF(outputText.value, "translation.pdf");
+speechTxtBtn.onclick = () => downloadTXT(speechText.value, "speech.txt");
+speechPdfBtn.onclick = () => downloadPDF(speechText.value, "speech.pdf");
+transTxtBtn.onclick = () => downloadTXT(outputText.value, "translation.txt");
+transPdfBtn.onclick = () => downloadPDF(outputText.value, "translation.pdf");
