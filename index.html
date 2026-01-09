@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speech to Text</title>
-
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Translator</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="app">
-    <h1>🎤 Speech to Text</h1>
-    <p class="subtitle">Speak and convert your voice into text</p>
+<div class="container">
+    <h1>🌍 Voice Translator</h1>
+    <p class="tagline">Speak in any language → Get text & translation</p>
 
-    <select id="language">
-        <option value="en-IN">English (India)</option>
-        <option value="ta-IN">Tamil (India)</option>
-        <option value="hi-IN">Hindi (India)</option>
-    </select>
-
-    <div class="buttons">
-        <button id="startBtn">Start</button>
-        <button id="stopBtn" disabled>Stop</button>
-        <button id="clearBtn">Clear</button>
+    <div class="select-group">
+        <div>
+            <label>🎤 Speak Language</label>
+            <select id="speechLang"></select>
+        </div>
+        <div>
+            <label>🌐 Translate To</label>
+            <select id="translateLang"></select>
+        </div>
     </div>
 
-    <textarea id="output" placeholder="Your speech will appear here..."></textarea>
+    <div class="buttons">
+        <button id="startBtn">▶ Start</button>
+        <button id="stopBtn" disabled>⏹ Stop</button>
+        <button id="clearBtn">🧹 Clear</button>
+    </div>
 
-    <p id="status">Status: Idle</p>
+    <textarea id="speechText" placeholder="Speech text..."></textarea>
+    <textarea id="translatedText" placeholder="Translated text..."></textarea>
+
+    <p id="status">Status: Ready</p>
 </div>
 
 <script src="script.js"></script>
