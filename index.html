@@ -1,62 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Speech & Translation Tool</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
 <section class="hero">
-  <h1>Speech to Text & Live Translation</h1>
-  <p>Speak freely. Translate instantly.</p>
-  <a href="#tools" class="btn">Start Now</a>
+  <h1>Speech to Text & Translation</h1>
+  <p>Fast • Free • Professional • Browser Based</p>
+  <a href="#tools" class="btn">Use Tools</a>
 </section>
 
-<section class="section" id="tools">
-  <h2>🎤 Speech to Text (Live)</h2>
+<section class="section tools-top" id="tools">
+  <h2>Tools</h2>
 
+  <!-- SPEECH -->
   <div class="box">
+    <h3>🎤 Speech to Text</h3>
     <p id="status" class="status">Idle</p>
-
     <textarea id="speechText" placeholder="Your speech text will appear here..." readonly></textarea>
-
-    <div class="row">
-      <select id="speechLang">
-        <option value="en-US">English</option>
-        <option value="ta-IN">Tamil</option>
-        <option value="hi-IN">Hindi</option>
-      </select>
-
-      <select id="targetLang">
-        <option value="ta">Tamil</option>
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-      </select>
-    </div>
 
     <div class="row">
       <button id="startSpeech">Start</button>
       <button id="stopSpeech">Stop</button>
-      <button id="resetSpeech" class="danger">Reset</button>
+      <button id="resetSpeech">Reset</button>
     </div>
-
-    <h3>🌐 Live Translation</h3>
-    <textarea id="translatedSpeech" placeholder="Live translation appears here..." readonly></textarea>
 
     <div class="row">
       <button id="speechTxt">TXT</button>
       <button id="speechPdf">PDF</button>
     </div>
   </div>
+
+  <!-- TRANSLATION -->
+  <div class="box">
+    <h3>🌐 Translation</h3>
+
+    <textarea id="inputText" placeholder="Enter text to translate"></textarea>
+
+    <div class="row">
+      <select id="fromLang">
+        <option value="en">English</option>
+        <option value="ta">Tamil</option>
+        <option value="hi">Hindi</option>
+      </select>
+
+      <select id="toLang">
+        <option value="ta">Tamil</option>
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+      </select>
+
+      <button id="translateBtn">Translate</button>
+    </div>
+
+    <textarea id="outputText" placeholder="Translated text..." readonly></textarea>
+
+    <div class="row">
+      <button id="transTxt">TXT</button>
+      <button id="transPdf">PDF</button>
+    </div>
+  </div>
 </section>
 
 <footer>
-  <p>© 2026 Speech Translation Tool</p>
+  <p>© 2026 Speech & Translation Tool</p>
 </footer>
 
 <script src="script.js"></script>
