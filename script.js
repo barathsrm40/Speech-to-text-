@@ -1,16 +1,10 @@
+/* ========= SPEECH TO TEXT ========= */
 let recognition;
 let finalText = "";
+let translating = false;
 
 const speechText = document.getElementById("speechText");
-const translatedSpeech = document.getElementById("translatedSpeech");
 const statusText = document.getElementById("status");
-
-const startBtn = document.getElementById("startSpeech");
-const stopBtn = document.getElementById("stopSpeech");
-const resetBtn = document.getElementById("resetSpeech");
-
-const speechLang = document.getElementById("speechLang");
-const targetLang = document.getElementById("targetLang");
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -18,15 +12,16 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
   recognition.continuous = true;
   recognition.interimResults = true;
+  recognition.lang = "en-US";
 
   recognition.onstart = () => {
-    statusText.textContent = "🎙️ Listening...";
-    statusText.style.color = "green";
+    statusText.textContent = "Listening...";
+    statusText.classList.add("listening");
   };
 
   recognition.onend = () => {
     statusText.textContent = "Stopped";
-    statusText.style.color = "#666";
+    statusText.classList.remove("listening");
   };
 
   recognition.onresult = async (event) => {
@@ -42,46 +37,49 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
     speechText.value = finalText + interim;
 
-    // Live translation only when final text updates
-    if (finalText.trim()) {
-      translateLive(finalText.trim());
+    // 🔁 LIVE TRANSLATION (THROTTLED)
+    if (!translating && speechText.value.trim().length > 5) {
+      translating = true;
+      liveTranslate(speechText.value.trim());
+      setTimeout(() => translating = false, 2000);
     }
-  };
-
-  recognition.onerror = (e) => {
-    statusText.textContent = "Error: " + e.error;
-    statusText.style.color = "red";
   };
 }
 
-startBtn.onclick = () => {
-  recognition.lang = speechLang.value;
+document.getElementById("startSpeech").onclick = () => {
+  finalText = speechText.value || "";
   recognition.start();
 };
 
-stopBtn.onclick = () => recognition.stop();
+document.getElementById("stopSpeech").onclick = () => recognition.stop();
 
-resetBtn.onclick = () => {
+document.getElementById("resetSpeech").onclick = () => {
   finalText = "";
   speechText.value = "";
-  translatedSpeech.value = "";
+  document.getElementById("outputText").value = "";
   statusText.textContent = "Idle";
 };
 
-/* 🔁 LIVE TRANSLATION */
-async function translateLive(text) {
+/* ========= LIVE TRANSLATION FUNCTION ========= */
+async function liveTranslate(text) {
+  const from = document.getElementById("fromLang").value;
+  const to = document.getElementById("toLang").value;
+  const output = document.getElementById("outputText");
+
   try {
     const res = await fetch(
-      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang.value}`
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`
     );
     const data = await res.json();
-    translatedSpeech.value = data.responseData.translatedText;
-  } catch {
-    translatedSpeech.value = "Translation error";
-  }
+    output.value = data.responseData.translatedText;
+  } catch {}
 }
 
-/* 📄 DOWNLOAD */
+/* ========= MANUAL TRANSLATE ========= */
+document.getElementById("translateBtn").onclick = () =>
+  liveTranslate(document.getElementById("inputText").value);
+
+/* ========= DOWNLOAD ========= */
 function downloadTXT(text, name) {
   if (!text) return alert("Nothing to download");
   const blob = new Blob([text], { type: "text/plain" });
@@ -104,3 +102,9 @@ document.getElementById("speechTxt").onclick =
 
 document.getElementById("speechPdf").onclick =
   () => downloadPDF(speechText.value, "speech.pdf");
+
+document.getElementById("transTxt").onclick =
+  () => downloadTXT(outputText.value, "translation.txt");
+
+document.getElementById("transPdf").onclick =
+  () => downloadPDF(outputText.value, "translation.pdf");
