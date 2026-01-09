@@ -1,74 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Speech & Translation Tool</title>
-
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpeakTranslate | Home</title>
+<meta name="description" content="Professional Speech to Text & Translation Tool">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#4facfe">
 </head>
 <body>
 
+<nav class="navbar">
+  <div class="logo">🧠 SpeakTranslate</div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="speech.html">Speech</a></li>
+    <li><a href="translate.html">Translate</a></li>
+    <li><a href="features.html">Features</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
+
 <section class="hero">
-  <h1>Speech to Text & Translation</h1>
-  <p>Fast • Free • Professional • Browser Based</p>
-  <a href="#tools" class="btn">Use Tools</a>
+  <h1>Convert Voice to Text & Translate Instantly</h1>
+  <p>Fast, free, browser-based tool for professionals, students, and content creators.</p>
+  <a href="speech.html" class="btn">Try Speech Tool</a>
+  <a href="translate.html" class="btn btn-outline">Try Translation</a>
 </section>
 
-<section class="section tools-top" id="tools">
-  <h2>Tools</h2>
-
-  <div class="box">
-    <h3>🎤 Speech to Text</h3>
-    <p id="listeningStatus" class="status">Idle</p>
-
-    <textarea id="speechText" readonly></textarea>
-
-    <div class="row">
-      <button id="startSpeech">Start</button>
-      <button id="stopSpeech">Stop</button>
-      <button id="resetSpeech">Reset</button>
-      <button id="speechTxt">TXT</button>
-      <button id="speechPdf">PDF</button>
+<section class="features">
+  <h2>Our Features</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>🎤 Speech to Text</h3>
+      <p>Capture long speech with start, stop, reset buttons. Download as TXT/PDF.</p>
+    </div>
+    <div class="card">
+      <h3>🌐 Translation</h3>
+      <p>Instant translation in multiple languages. Download TXT/PDF.</p>
+    </div>
+    <div class="card">
+      <h3>💾 Offline PWA</h3>
+      <p>Installable as Progressive Web App with offline access.</p>
+    </div>
+    <div class="card">
+      <h3>📱 Mobile Friendly</h3>
+      <p>Responsive design for phones, tablets, and desktops.</p>
     </div>
   </div>
+</section>
 
-  <div class="box">
-    <h3>🌐 Translation</h3>
-
-    <textarea id="inputText"></textarea>
-
-    <div class="row">
-      <select id="fromLang">
-        <option value="en">English</option>
-        <option value="ta">Tamil</option>
-        <option value="hi">Hindi</option>
-      </select>
-
-      <select id="toLang">
-        <option value="ta">Tamil</option>
-        <option value="en">English</option>
-        <option value="hi">Hindi</option>
-      </select>
-
-      <button id="translateBtn">Translate</button>
-    </div>
-
-    <textarea id="outputText" readonly></textarea>
-
-    <div class="row">
-      <button id="transTxt">TXT</button>
-      <button id="transPdf">PDF</button>
-    </div>
-  </div>
+<section class="cta">
+  <h2>Ready to Start?</h2>
+  <a href="speech.html" class="btn">Start Using</a>
 </section>
 
 <footer>
-  <p>© 2026 Speech & Translation Tool</p>
+  <p>© 2026 SpeakTranslate | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p>
 </footer>
 
-<script src="script.js"></script>
+<script src="service-worker.js"></script>
+<script>
+if('serviceWorker' in navigator){navigator.serviceWorker.register('service-worker.js');}
+</script>
+
 </body>
 </html>
