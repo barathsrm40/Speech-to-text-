@@ -3,36 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Voice Translator</title>
+<title>Ultimate Translator & Speech App</title>
 <link rel="stylesheet" href="style.css">
+
+<!-- PDF.js library -->
+<script src="pdf.min.js"></script>
+<!-- html2pdf for download -->
+<script src="html2pdf.bundle.min.js"></script>
+
 </head>
 <body>
 
-<div class="container">
-    <h1>🌍 Voice Translator</h1>
-    <p class="tagline">Speak in any language → Get text & translation</p>
+<!-- Sidebar -->
+<div id="sidebar" class="sidebar">
+    <h2>🛠 Tools</h2>
+    <button onclick="showModule('voice')">🎤 Voice to Text</button>
+    <button onclick="showModule('translate')">🌐 Translate Text</button>
+    <button onclick="showModule('pdf')">📄 PDF Translate</button>
+    <button onclick="showModule('images')">🖼 Image Translate</button>
+</div>
 
-    <div class="select-group">
-        <div>
-            <label>🎤 Speak Language</label>
-            <select id="speechLang"></select>
+<!-- Bar icon -->
+<div id="barIcon" onclick="toggleSidebar()">☰</div>
+
+<!-- Main content -->
+<div class="main" id="mainContent">
+
+    <!-- Voice Module -->
+    <div id="voiceModule" class="module">
+        <h1>🎤 Voice to Text</h1>
+        <select id="voiceLang"></select>
+        <div class="buttons">
+            <button id="startVoiceBtn">▶ Start</button>
+            <button id="stopVoiceBtn" disabled>⏹ Stop</button>
+            <button id="clearVoiceBtn">🧹 Clear</button>
         </div>
-        <div>
-            <label>🌐 Translate To</label>
-            <select id="translateLang"></select>
-        </div>
+        <textarea id="voiceOutput" placeholder="Speech text appears here"></textarea>
+        <button onclick="downloadText('voiceOutput', 'speech.txt')">💾 Download TXT</button>
     </div>
 
-    <div class="buttons">
-        <button id="startBtn">▶ Start</button>
-        <button id="stopBtn" disabled>⏹ Stop</button>
-        <button id="clearBtn">🧹 Clear</button>
+    <!-- Text Translate Module -->
+    <div id="translateModule" class="module" style="display:none;">
+        <h1>🌐 Translate Text</h1>
+        <textarea id="textInput" placeholder="Enter text to translate"></textarea>
+        <select id="translateFrom"></select>
+        <select id="translateTo"></select>
+        <button onclick="translateTextManual()">Translate</button>
+        <textarea id="textTranslated" placeholder="Translated text"></textarea>
+        <button onclick="downloadText('textTranslated','translated.txt')">💾 Download TXT</button>
     </div>
 
-    <textarea id="speechText" placeholder="Speech text..."></textarea>
-    <textarea id="translatedText" placeholder="Translated text..."></textarea>
+    <!-- PDF Module -->
+    <div id="pdfModule" class="module" style="display:none;">
+        <h1>📄 PDF Translator</h1>
+        <input type="file" id="pdfFile" accept="application/pdf">
+        <button onclick="translatePDF()">Translate PDF</button>
+        <textarea id="pdfOutput" placeholder="Translated PDF text"></textarea>
+        <button onclick="downloadText('pdfOutput','pdf_translated.txt')">💾 Download TXT</button>
+        <button onclick="downloadPDF('pdfOutput','pdf_translated.pdf')">💾 Download PDF</button>
+    </div>
 
-    <p id="status">Status: Ready</p>
+    <!-- Image Module -->
+    <div id="imageModule" class="module" style="display:none;">
+        <h1>🖼 Image Translator</h1>
+        <input type="file" id="imgFile" accept="image/*">
+        <button onclick="translateImage()">Translate Image</button>
+        <textarea id="imgOutput" placeholder="Translated image text"></textarea>
+        <button onclick="downloadText('imgOutput','image_translated.txt')">💾 Download TXT</button>
+        <button onclick="downloadPDF('imgOutput','image_translated.pdf')">💾 Download PDF</button>
+    </div>
+
 </div>
 
 <script src="script.js"></script>
