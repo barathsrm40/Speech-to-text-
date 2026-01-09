@@ -1,12 +1,12 @@
-// ---------------- Sidebar ----------------
-function toggleSidebar() {
-    let sidebar = document.getElementById("sidebar");
-    sidebar.style.transform = sidebar.style.transform === "translateX(-200px)" ? "translateX(0)" : "translateX(-200px)";
+// ------------------- Navigation -------------------
+function openModule(module){
+    document.getElementById("homePage").style.display="none";
+    document.getElementById(module+"Module").style.display="block";
 }
-function showModule(id) {
-    const modules=["voiceModule","translateModule","pdfModule","imageModule"];
-    modules.forEach(m => document.getElementById(m).style.display="none");
-    document.getElementById(id+"Module").style.display="block";
+function goHome(){
+    const modules=["voice","text","pdf","image"];
+    modules.forEach(m => document.getElementById(m+"Module").style.display="none");
+    document.getElementById("homePage").style.display="block";
 }
 
 // ---------------- Languages ----------------
