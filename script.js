@@ -13,7 +13,6 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
     window.SpeechRecognition || window.webkitSpeechRecognition;
 
   recognition = new SpeechRecognition();
-
   recognition.continuous = true;
   recognition.interimResults = true;
   recognition.lang = "en-US";
@@ -24,9 +23,8 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
   };
 
   recognition.onend = () => {
-    // 🔁 Auto restart ONLY if user didn't stop
     if (!isUserStopped) {
-      recognition.start();
+      recognition.start(); // auto-restart
     } else {
       statusText.textContent = "Stopped";
       statusText.style.color = "red";
@@ -38,49 +36,44 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
   };
 
   recognition.onresult = (event) => {
-    let interimText = "";
+    let interim = "";
 
     for (let i = event.resultIndex; i < event.results.length; i++) {
-      const transcript = event.results[i][0].transcript;
+      const text = event.results[i][0].transcript;
 
       if (event.results[i].isFinal) {
-        finalTranscript += transcript + " ";
+        finalTranscript += text + " ";
       } else {
-        interimText = transcript;
+        interim = text;
       }
     }
 
-    // ✅ No duplication
-    speechText.value = finalTranscript + interimText;
+    speechText.value = finalTranscript + interim;
   };
 }
 
 /* BUTTONS */
 
-document.getElementById("startSpeech").onclick = () => {
-  if (!recognition) return alert("Speech not supported");
-
+startSpeech.onclick = () => {
   isUserStopped = false;
-  try {
-    recognition.start();
-  } catch {}
+  try { recognition.start(); } catch {}
 };
 
-document.getElementById("stopSpeech").onclick = () => {
+stopSpeech.onclick = () => {
   isUserStopped = true;
   recognition.stop();
 };
 
-document.getElementById("resetSpeech").onclick = () => {
+resetSpeech.onclick = () => {
   finalTranscript = "";
   speechText.value = "";
   statusText.textContent = "Idle";
   statusText.style.color = "#555";
 };
 
-/* ================= TRANSLATION (UNCHANGED) ================= */
+/* ================= TRANSLATION ================= */
 
-document.getElementById("translateBtn").onclick = async () => {
+translateBtn.onclick = async () => {
   const text = inputText.value.trim();
   if (!text) return alert("Enter text");
 
