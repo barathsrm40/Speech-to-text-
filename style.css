@@ -90,11 +90,17 @@ section {
 }
 
 /* Widgets */
+.demo-widgets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
 .widget {
+  flex: 1 1 400px;
   background: #f0f0f0;
   padding: 15px;
   border-radius: 12px;
-  margin-bottom: 20px;
 }
 
 textarea {
@@ -166,8 +172,8 @@ footer {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .feature-cards, .steps {
+@media (max-width: 900px) {
+  .feature-cards, .steps, .demo-widgets {
     flex-direction: column;
   }
 }
