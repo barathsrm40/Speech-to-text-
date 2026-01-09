@@ -9,6 +9,7 @@ body {
   color: #333;
 }
 
+/* HERO */
 .hero {
   background: linear-gradient(135deg, #4facfe, #00f2fe);
   color: white;
@@ -25,6 +26,7 @@ body {
   font-weight: 600;
 }
 
+/* SECTIONS */
 .section {
   padding: 40px 20px;
   max-width: 1000px;
@@ -39,6 +41,7 @@ h2 {
   text-align: center;
 }
 
+/* BOX */
 .box {
   background: white;
   padding: 20px;
@@ -47,6 +50,14 @@ h2 {
   box-shadow: 0 6px 18px rgba(0,0,0,0.1);
 }
 
+/* STATUS */
+.status {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+/* INPUTS */
 textarea {
   width: 100%;
   min-height: 120px;
@@ -54,8 +65,10 @@ textarea {
   margin: 10px 0;
   border-radius: 8px;
   border: 1px solid #ccc;
+  resize: none;
 }
 
+/* ROW */
 .row {
   display: flex;
   gap: 10px;
@@ -72,20 +85,11 @@ button, select {
   cursor: pointer;
 }
 
-.status {
-  font-weight: 600;
-  margin-bottom: 8px;
+button:hover {
+  opacity: 0.9;
 }
 
-.listening {
-  color: green;
-  animation: blink 1s infinite;
-}
-
-@keyframes blink {
-  50% { opacity: 0.5; }
-}
-
+/* FOOTER */
 footer {
   background: #333;
   color: white;
@@ -93,6 +97,7 @@ footer {
   padding: 15px;
 }
 
+/* MOBILE */
 @media (max-width: 600px) {
   .row {
     flex-direction: column;
