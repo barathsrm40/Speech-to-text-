@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Translation Tool</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">🌐 Translation Tool</div>
+  <ul><li><a href="index.html">Home</a></li></ul>
+</nav>
+
+<section class="container">
+  <h1>Text Translation</h1>
+
+  <div class="translation-controls">
+    <label>From:</label>
+    <select id="fromLang">
+      <option value="en">English</option>
+      <option value="ta">Tamil</option>
+      <option value="hi">Hindi</option>
+    </select>
+
+    <label>To:</label>
+    <select id="toLang">
+      <option value="ta">Tamil</option>
+      <option value="en">English</option>
+      <option value="hi">Hindi</option>
+    </select>
+  </div>
+
+  <textarea id="inputText" placeholder="Enter text here"></textarea>
+  <button id="translateBtn">Translate</button>
+  <textarea id="outputText" placeholder="Translated text"></textarea>
+
+  <div class="buttons">
+    <button id="transTxt">⬇ Download TXT</button>
+    <button id="transPdf">⬇ Download PDF</button>
+  </div>
+</section>
+
+<script src="translate.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>
