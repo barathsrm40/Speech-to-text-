@@ -1,84 +1,76 @@
-// --- Speech-to-Text ---
+/* ========= SPEECH TO TEXT ========= */
 let recognition;
-const textOutput = document.getElementById('textOutput');
+const speechText = document.getElementById("speechText");
 
-if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-    alert("Speech recognition not supported. Use Chrome/Edge.");
-} else {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = 'en-US';
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SpeechRecognition();
+  recognition.continuous = true;
+  recognition.lang = "en-US";
 
-    recognition.onresult = (event) => {
-        let transcript = '';
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-            transcript += event.results[i][0].transcript;
-        }
-        textOutput.value = transcript;
-    };
-    recognition.onerror = (event) => console.error("Speech error:", event.error);
-}
-
-document.getElementById('startBtn').addEventListener('click', () => recognition.start());
-document.getElementById('stopBtn').addEventListener('click', () => recognition.stop());
-
-// --- Translation ---
-const translateBtn = document.getElementById('translateBtn');
-const textInput = document.getElementById('textInput');
-const translatedText = document.getElementById('translatedText');
-const sourceLang = document.getElementById('sourceLang');
-const targetLang = document.getElementById('targetLang');
-
-translateBtn.addEventListener('click', async () => {
-    const text = textInput.value.trim();
-    if (!text) return alert("Enter text first!");
-    translatedText.value = "Translating...";
-    try {
-        const res = await fetch("https://translate.argosopentech.com/translate", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({q: text, source: sourceLang.value, target: targetLang.value})
-        });
-        const data = await res.json();
-        translatedText.value = data.translatedText;
-    } catch(err) {
-        translatedText.value = "";
-        alert("Translation failed: " + err);
+  recognition.onresult = (event) => {
+    let result = "";
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      result += event.results[i][0].transcript;
     }
-});
-
-// --- Download TXT ---
-function downloadText(content, filename){
-    if(!content) return alert("Nothing to download!");
-    const blob = new Blob([content], { type: "text/plain" });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
+    speechText.value = result;
+  };
 }
 
-document.getElementById('downloadTxtST').addEventListener('click', () => downloadText(textOutput.value, "speech.txt"));
-document.getElementById('downloadTxtTR').addEventListener('click', () => downloadText(translatedText.value, "translation.txt"));
+document.getElementById("startSpeech").onclick = () => recognition.start();
+document.getElementById("stopSpeech").onclick = () => recognition.stop();
 
-// --- Download PDF ---
-function downloadPDF(content, filename){
-    if(!content) return alert("Nothing to download!");
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const lines = doc.splitTextToSize(content, 180);
-    doc.text(lines, 10, 10);
-    doc.save(filename);
+/* ========= TRANSLATION (WORKING) ========= */
+document.getElementById("translateBtn").onclick = async () => {
+  const text = document.getElementById("inputText").value.trim();
+  const from = document.getElementById("fromLang").value;
+  const to = document.getElementById("toLang").value;
+  const output = document.getElementById("outputText");
+
+  if (!text) return alert("Enter text first");
+
+  output.value = "Translating...";
+
+  try {
+    const res = await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`
+    );
+    const data = await res.json();
+    output.value = data.responseData.translatedText;
+  } catch {
+    output.value = "";
+    alert("Translation failed");
+  }
+};
+
+/* ========= DOWNLOAD TXT ========= */
+function downloadTXT(text, name) {
+  if (!text) return alert("Nothing to download");
+  const blob = new Blob([text], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = name;
+  a.click();
 }
 
-document.getElementById('downloadPdfST').addEventListener('click', () => downloadPDF(textOutput.value, "speech.pdf"));
-document.getElementById('downloadPdfTR').addEventListener('click', () => downloadPDF(translatedText.value, "translation.pdf"));
+document.getElementById("speechTxt").onclick =
+  () => downloadTXT(speechText.value, "speech.txt");
 
-// --- FAQ Accordion ---
-document.querySelectorAll('.faq-question').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const answer = btn.nextElementSibling;
-        answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
-    });
-});
+document.getElementById("transTxt").onclick =
+  () => downloadTXT(document.getElementById("outputText").value, "translation.txt");
+
+/* ========= DOWNLOAD PDF ========= */
+function downloadPDF(text, name) {
+  if (!text) return alert("Nothing to download");
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const lines = doc.splitTextToSize(text, 180);
+  doc.text(lines, 10, 10);
+  doc.save(name);
+}
+
+document.getElementById("speechPdf").onclick =
+  () => downloadPDF(speechText.value, "speech.pdf");
+
+document.getElementById("transPdf").onclick =
+  () => downloadPDF(document.getElementById("outputText").value, "translation.pdf");
