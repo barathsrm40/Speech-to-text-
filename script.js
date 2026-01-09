@@ -1,8 +1,10 @@
-// Speech-to-Text
-let recognition, isRecording = false;
+// --- Speech-to-Text ---
+let recognition;
 const textOutput = document.getElementById('textOutput');
 
-if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+    alert("Speech recognition not supported. Use Chrome/Edge.");
+} else {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
     recognition.continuous = true;
@@ -16,46 +18,38 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
         }
         textOutput.value = transcript;
     };
-
-    recognition.onerror = (event) => alert("Error: " + event.error);
-} else {
-    alert("Your browser does not support Speech Recognition API. Use Chrome or Edge.");
+    recognition.onerror = (event) => console.error("Speech error:", event.error);
 }
 
-document.getElementById('startBtn')?.addEventListener('click', () => {
-    if (!isRecording) { recognition.start(); isRecording = true; }
-});
-document.getElementById('stopBtn')?.addEventListener('click', () => {
-    if (isRecording) { recognition.stop(); isRecording = false; }
-});
+document.getElementById('startBtn').addEventListener('click', () => recognition.start());
+document.getElementById('stopBtn').addEventListener('click', () => recognition.stop());
 
-// Translation
+// --- Translation ---
 const translateBtn = document.getElementById('translateBtn');
 const textInput = document.getElementById('textInput');
 const translatedText = document.getElementById('translatedText');
 const sourceLang = document.getElementById('sourceLang');
 const targetLang = document.getElementById('targetLang');
 
-translateBtn?.addEventListener('click', async () => {
+translateBtn.addEventListener('click', async () => {
     const text = textInput.value.trim();
     if (!text) return alert("Enter text first!");
     translatedText.value = "Translating...";
-
     try {
-        const response = await fetch("https://libretranslate.de/translate", {
+        const res = await fetch("https://translate.argosopentech.com/translate", {
             method: "POST",
-            body: JSON.stringify({q: text, source: sourceLang.value, target: targetLang.value, format: "text"}),
-            headers: { "Content-Type": "application/json" }
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({q: text, source: sourceLang.value, target: targetLang.value})
         });
-        const data = await response.json();
+        const data = await res.json();
         translatedText.value = data.translatedText;
-    } catch (err) {
+    } catch(err) {
         translatedText.value = "";
-        alert("Translation failed! " + err);
+        alert("Translation failed: " + err);
     }
 });
 
-// Download TXT
+// --- Download TXT ---
 function downloadText(content, filename){
     if(!content) return alert("Nothing to download!");
     const blob = new Blob([content], { type: "text/plain" });
@@ -65,10 +59,10 @@ function downloadText(content, filename){
     link.click();
 }
 
-document.getElementById('downloadTxtST')?.addEventListener('click', () => downloadText(textOutput.value, "speech.txt"));
-document.getElementById('downloadTxtTR')?.addEventListener('click', () => downloadText(translatedText.value, "translation.txt"));
+document.getElementById('downloadTxtST').addEventListener('click', () => downloadText(textOutput.value, "speech.txt"));
+document.getElementById('downloadTxtTR').addEventListener('click', () => downloadText(translatedText.value, "translation.txt"));
 
-// Download PDF
+// --- Download PDF ---
 function downloadPDF(content, filename){
     if(!content) return alert("Nothing to download!");
     const { jsPDF } = window.jspdf;
@@ -78,10 +72,10 @@ function downloadPDF(content, filename){
     doc.save(filename);
 }
 
-document.getElementById('downloadPdfST')?.addEventListener('click', () => downloadPDF(textOutput.value, "speech.pdf"));
-document.getElementById('downloadPdfTR')?.addEventListener('click', () => downloadPDF(translatedText.value, "translation.pdf"));
+document.getElementById('downloadPdfST').addEventListener('click', () => downloadPDF(textOutput.value, "speech.pdf"));
+document.getElementById('downloadPdfTR').addEventListener('click', () => downloadPDF(translatedText.value, "translation.pdf"));
 
-// FAQ Accordion
+// --- FAQ Accordion ---
 document.querySelectorAll('.faq-question').forEach(btn => {
     btn.addEventListener('click', () => {
         const answer = btn.nextElementSibling;
