@@ -1,117 +1,90 @@
-// ------------------- Navigation --------------------
-function openModule(module){
-    document.getElementById("homePage").style.display="none";
-    document.getElementById(module+"Module").style.display="block";
-}
-function goHome(){
-    const modules=["voice","text","pdf","image"];
-    modules.forEach(m => document.getElementById(m+"Module").style.display="none");
-    document.getElementById("homePage").style.display="block";
-}
+// Speech-to-Text
+let recognition, isRecording = false;
+const textOutput = document.getElementById('textOutput');
 
-// ---------------- Languages ----------------
-const languages={"en":"English","ta":"Tamil","hi":"Hindi","fr":"French","de":"German","es":"Spanish","zh":"Chinese","ja":"Japanese","ko":"Korean"};
-const voiceLang=document.getElementById("voiceLang");
-const translateFrom=document.getElementById("translateFrom");
-const translateTo=document.getElementById("translateTo");
-for(let c in languages){
-    voiceLang.innerHTML+=`<option value="${c}">${languages[c]}</option>`;
-    translateFrom.innerHTML+=`<option value="${c}">${languages[c]}</option>`;
-    translateTo.innerHTML+=`<option value="${c}">${languages[c]}</option>`;
-}
-voiceLang.value="en"; translateFrom.value="en"; translateTo.value="ta";
+if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
 
-// ---------------- Voice Module ----------------
-let recognition, listening=false;
-const voiceOutput=document.getElementById("voiceOutput");
-if("webkitSpeechRecognition" in window){
-    recognition=new webkitSpeechRecognition();
-    recognition.continuous=true;
-}else alert("Speech recognition not supported.");
-
-document.getElementById("startVoiceBtn").onclick=()=>{
-    recognition.lang=voiceLang.value;
-    recognition.start(); listening=true;
-    document.getElementById("startVoiceBtn").disabled=true;
-    document.getElementById("stopVoiceBtn").disabled=false;
-};
-document.getElementById("stopVoiceBtn").onclick=()=>{
-    recognition.stop(); listening=false;
-    document.getElementById("startVoiceBtn").disabled=false;
-    document.getElementById("stopVoiceBtn").disabled=true;
-};
-document.getElementById("clearVoiceBtn").onclick=()=>{voiceOutput.value="";};
-recognition.onresult=(e)=>{
-    let text=""; for(let i=e.resultIndex;i<e.results.length;i++){text+=e.results[i][0].transcript;}
-    voiceOutput.value+=text+" ";
-};
-recognition.onend=()=>{if(listening) recognition.start();};
-
-// ---------------- Text Translate ----------------
-function translateTextManual(){
-    const text=document.getElementById("textInput").value;
-    fetch("https://libretranslate.de/translate",{
-        method:"POST",
-        body:JSON.stringify({q:text,source:translateFrom.value,target:translateTo.value,format:"text"}),
-        headers:{"Content-Type":"application/json"}
-    }).then(res=>res.json()).then(data=>{document.getElementById("textTranslated").value=data.translatedText;})
-      .catch(()=>{document.getElementById("textTranslated").value="Translation Error";});
-}
-
-// ---------------- PDF Translate ----------------
-function translatePDF(){
-    const file=document.getElementById("pdfFile").files[0];
-    if(!file){alert("Select a PDF"); return;}
-    const reader=new FileReader();
-    reader.onload=function(e){
-        const typedarray=new Uint8Array(e.target.result);
-        pdfjsLib.getDocument(typedarray).promise.then(pdf=>{
-            let pages=Math.min(pdf.numPages,50);
-            let promises=[];
-            for(let i=1;i<=pages;i++){
-                promises.push(pdf.getPage(i).then(pg=>pg.getTextContent().then(tc=>tc.items.map(it=>it.str).join(" "))));
-            }
-            Promise.all(promises).then(txt=>{
-                const fullText=txt.join("\n");
-                fetch("https://libretranslate.de/translate",{
-                    method:"POST",
-                    body:JSON.stringify({q:fullText,source:translateFrom.value,target:translateTo.value,format:"text"}),
-                    headers:{"Content-Type":"application/json"}
-                }).then(res=>res.json()).then(data=>{document.getElementById("pdfOutput").value=data.translatedText;});
-            });
-        });
+    recognition.onresult = (event) => {
+        let transcript = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+        textOutput.value = transcript;
     };
-    reader.readAsArrayBuffer(file);
+
+    recognition.onerror = (event) => alert("Error: " + event.error);
+} else {
+    alert("Your browser does not support Speech Recognition API. Use Chrome or Edge.");
 }
 
-// ---------------- Image Translate ----------------
-function translateImage(){
-    const file=document.getElementById("imgFile").files[0];
-    if(!file){alert("Select an image"); return;}
-    const reader=new FileReader();
-    reader.onload=function(e){
-        Tesseract.recognize(e.target.result,'eng',{logger:m=>console.log(m)}).then(result=>{
-            const text=result.data.text;
-            fetch("https://libretranslate.de/translate",{
-                method:"POST",
-                body:JSON.stringify({q:text,source:"en",target:translateTo.value,format:"text"}),
-                headers:{"Content-Type":"application/json"}
-            }).then(res=>res.json()).then(data=>{document.getElementById("imgOutput").value=data.translatedText;});
+document.getElementById('startBtn')?.addEventListener('click', () => {
+    if (!isRecording) { recognition.start(); isRecording = true; }
+});
+document.getElementById('stopBtn')?.addEventListener('click', () => {
+    if (isRecording) { recognition.stop(); isRecording = false; }
+});
+
+// Translation
+const translateBtn = document.getElementById('translateBtn');
+const textInput = document.getElementById('textInput');
+const translatedText = document.getElementById('translatedText');
+const sourceLang = document.getElementById('sourceLang');
+const targetLang = document.getElementById('targetLang');
+
+translateBtn?.addEventListener('click', async () => {
+    const text = textInput.value.trim();
+    if (!text) return alert("Enter text first!");
+    translatedText.value = "Translating...";
+
+    try {
+        const response = await fetch("https://libretranslate.de/translate", {
+            method: "POST",
+            body: JSON.stringify({q: text, source: sourceLang.value, target: targetLang.value, format: "text"}),
+            headers: { "Content-Type": "application/json" }
         });
-    };
-    reader.readAsDataURL(file);
-}
+        const data = await response.json();
+        translatedText.value = data.translatedText;
+    } catch (err) {
+        translatedText.value = "";
+        alert("Translation failed! " + err);
+    }
+});
 
-// ---------------- Download ----------------
-function downloadText(id,filename){
-    const text=document.getElementById(id).value;
-    const blob=new Blob([text],{type:"text/plain"});
-    const link=document.createElement("a");
-    link.href=URL.createObjectURL(blob);
-    link.download=filename;
+// Download TXT
+function downloadText(content, filename){
+    if(!content) return alert("Nothing to download!");
+    const blob = new Blob([content], { type: "text/plain" });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
     link.click();
 }
-function downloadPDF(id,filename){
-    const element=document.getElementById(id);
-    html2pdf().from(element).set({filename:filename}).save();
+
+document.getElementById('downloadTxtST')?.addEventListener('click', () => downloadText(textOutput.value, "speech.txt"));
+document.getElementById('downloadTxtTR')?.addEventListener('click', () => downloadText(translatedText.value, "translation.txt"));
+
+// Download PDF
+function downloadPDF(content, filename){
+    if(!content) return alert("Nothing to download!");
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const lines = doc.splitTextToSize(content, 180);
+    doc.text(lines, 10, 10);
+    doc.save(filename);
 }
+
+document.getElementById('downloadPdfST')?.addEventListener('click', () => downloadPDF(textOutput.value, "speech.pdf"));
+document.getElementById('downloadPdfTR')?.addEventListener('click', () => downloadPDF(translatedText.value, "translation.pdf"));
+
+// FAQ Accordion
+document.querySelectorAll('.faq-question').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const answer = btn.nextElementSibling;
+        answer.style.display = answer.style.display === 'block' ? 'none' : 'block';
+    });
+});
