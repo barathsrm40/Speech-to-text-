@@ -1,4 +1,4 @@
-// ------------------- Navigation -------------------
+// ------------------- Navigation --------------------
 function openModule(module){
     document.getElementById("homePage").style.display="none";
     document.getElementById(module+"Module").style.display="block";
