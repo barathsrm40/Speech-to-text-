@@ -1,105 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Translator App</title>
-<link rel="stylesheet" href="style.css">
-
-<!-- Libraries -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speech & Translation Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
 </head>
 <body>
 
-<!-- Home Page -->
-<div id="homePage" class="page">
-    <h1>🌍 Ultimate Translator</h1>
-    <p>Select a tool:</p>
-    <div class="card-container">
-        <div class="card voice" onclick="openModule('voice')">
-            🎤<h3>Voice to Text</h3>
-        </div>
-        <div class="card text" onclick="openModule('text')">
-            🌐<h3>Text Translation</h3>
-        </div>
-        <div class="card pdf" onclick="openModule('pdf')">
-            📄<h3>PDF Translation</h3>
-        </div>
-        <div class="card image" onclick="openModule('image')">
-            🖼<h3>Image Translation</h3>
-        </div>
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="container">
+      <h1 data-aos="fade-up">Convert Speech to Text & Translate Instantly</h1>
+      <p data-aos="fade-up" data-aos-delay="200">Browser-based, free, fast, and professional tool. Try it now!</p>
+      <div class="hero-buttons" data-aos="fade-up" data-aos-delay="400">
+        <a href="#features" class="btn">Get Started</a>
+        <a href="#live-demo" class="btn btn-secondary">Try Live Demo</a>
+      </div>
     </div>
-</div>
+  </section>
 
-<!-- Voice Module -->
-<div id="voiceModule" class="page" style="display:none;">
-    <button class="backBtn" onclick="goHome()">⬅ Back</button>
-    <h1>🎤 Voice to Text</h1>
-    <div class="card-content">
-        <select id="voiceLang"></select>
-        <div class="buttons">
-            <button id="startVoiceBtn">▶ Start</button>
-            <button id="stopVoiceBtn" disabled>⏹ Stop</button>
-            <button id="clearVoiceBtn">🧹 Clear</button>
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="container">
+      <h2 data-aos="fade-right">Features</h2>
+      <div class="feature-cards">
+        <div class="card" data-aos="fade-up">
+          <h3>🎤 Speech to Text</h3>
+          <p>Record audio directly from your browser and convert it into editable text. Download as TXT or PDF.</p>
         </div>
-        <textarea id="voiceOutput" placeholder="Speech text appears here"></textarea>
-        <div class="buttons">
-            <button onclick="downloadText('voiceOutput','speech.txt')">💾 Download TXT</button>
-            <button onclick="downloadPDF('voiceOutput','speech.pdf')">💾 Download PDF</button>
+        <div class="card" data-aos="fade-up" data-aos-delay="200">
+          <h3>🌐 Translation</h3>
+          <p>Translate text between multiple languages instantly. Copy or download results easily.</p>
         </div>
+      </div>
     </div>
-</div>
+  </section>
 
-<!-- Text Module -->
-<div id="textModule" class="page" style="display:none;">
-    <button class="backBtn" onclick="goHome()">⬅ Back</button>
-    <h1>🌐 Text Translation</h1>
-    <div class="card-content">
-        <textarea id="textInput" placeholder="Enter text to translate"></textarea>
-        <select id="translateFrom"></select>
-        <select id="translateTo"></select>
-        <button onclick="translateTextManual()">Translate</button>
-        <textarea id="textTranslated" placeholder="Translated text"></textarea>
-        <div class="buttons">
-            <button onclick="downloadText('textTranslated','translated.txt')">💾 Download TXT</button>
-            <button onclick="downloadPDF('textTranslated','translated.pdf')">💾 Download PDF</button>
+  <!-- How It Works -->
+  <section class="how-it-works" id="how-it-works">
+    <div class="container">
+      <h2 data-aos="fade-left">How It Works</h2>
+      <div class="steps">
+        <div class="step" data-aos="fade-up">
+          <h3>1. Record</h3>
+          <p>Speak into your microphone to generate text instantly.</p>
         </div>
-    </div>
-</div>
-
-<!-- PDF Module -->
-<div id="pdfModule" class="page" style="display:none;">
-    <button class="backBtn" onclick="goHome()">⬅ Back</button>
-    <h1>📄 PDF Translation</h1>
-    <div class="card-content">
-        <input type="file" id="pdfFile" accept="application/pdf">
-        <button onclick="translatePDF()">Translate PDF</button>
-        <textarea id="pdfOutput" placeholder="Translated PDF text"></textarea>
-        <div class="buttons">
-            <button onclick="downloadText('pdfOutput','pdf_translated.txt')">💾 Download TXT</button>
-            <button onclick="downloadPDF('pdfOutput','pdf_translated.pdf')">💾 Download PDF</button>
+        <div class="step" data-aos="fade-up" data-aos-delay="200">
+          <h3>2. Translate</h3>
+          <p>Choose source and target languages to translate your text.</p>
         </div>
-    </div>
-</div>
-
-<!-- Image Module -->
-<div id="imageModule" class="page" style="display:none;">
-    <button class="backBtn" onclick="goHome()">⬅ Back</button>
-    <h1>🖼 Image Translation</h1>
-    <div class="card-content">
-        <input type="file" id="imgFile" accept="image/*">
-        <button onclick="translateImage()">Translate Image</button>
-        <textarea id="imgOutput" placeholder="Translated image text"></textarea>
-        <div class="buttons">
-            <button onclick="downloadText('imgOutput','image_translated.txt')">💾 Download TXT</button>
-            <button onclick="downloadPDF('imgOutput','image_translated.pdf')">💾 Download PDF</button>
+        <div class="step" data-aos="fade-up" data-aos-delay="400">
+          <h3>3. Download</h3>
+          <p>Save your text or translation as TXT or PDF easily.</p>
         </div>
+      </div>
     </div>
-</div>
+  </section>
 
-<script src="script.js"></script>
+  <!-- Live Demo Section -->
+  <section class="live-demo" id="live-demo">
+    <div class="container">
+      <h2 data-aos="fade-right">Live Demo</h2>
+      <div class="demo-widgets">
+        <!-- Speech to Text Widget -->
+        <div class="widget" data-aos="fade-up">
+          <h3>🎤 Speech to Text</h3>
+          <textarea id="textOutput" placeholder="Your speech will appear here..." readonly></textarea>
+          <div class="controls">
+            <button id="startBtn">Start Recording</button>
+            <button id="stopBtn">Stop Recording</button>
+            <button id="downloadTxtST">Download TXT</button>
+            <button id="downloadPdfST">Download PDF</button>
+          </div>
+        </div>
+
+        <!-- Translation Widget -->
+        <div class="widget" data-aos="fade-up" data-aos-delay="200">
+          <h3>🌐 Translation</h3>
+          <textarea id="textInput" placeholder="Enter text here..."></textarea>
+          <div class="controls">
+            <select id="sourceLang">
+              <option value="en">English</option>
+              <option value="ta">Tamil</option>
+              <option value="hi">Hindi</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+            </select>
+            <select id="targetLang">
+              <option value="en">English</option>
+              <option value="ta">Tamil</option>
+              <option value="hi">Hindi</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+            </select>
+            <button id="translateBtn">Translate</button>
+            <button id="downloadTxtTR">Download TXT</button>
+            <button id="downloadPdfTR">Download PDF</button>
+          </div>
+          <textarea id="translatedText" placeholder="Translation will appear here..." readonly></textarea>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section class="benefits" id="benefits">
+    <div class="container">
+      <h2 data-aos="fade-right">Why Choose Us</h2>
+      <div class="benefit-cards">
+        <div class="card" data-aos="fade-up">
+          <h3>Fast & Reliable</h3>
+          <p>Instant speech recognition and translation with high accuracy.</p>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="200">
+          <h3>Free & Browser-Based</h3>
+          <p>No installations required. Works directly in your browser.</p>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="400">
+          <h3>Secure & Private</h3>
+          <p>Your data stays in your browser. Nothing is stored on servers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials" id="testimonials">
+    <div class="container">
+      <h2 data-aos="fade-left">Testimonials</h2>
+      <div class="testimonial-cards">
+        <div class="card" data-aos="fade-up">
+          <p>"This tool saved me hours of work. Highly recommend!"</p>
+          <h4>- Alice</h4>
+        </div>
+        <div class="card" data-aos="fade-up" data-aos-delay="200">
+          <p>"Accurate translations and easy to use. Fantastic website!"</p>
+          <h4>- Rahul</h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq" id="faq">
+    <div class="container">
+      <h2 data-aos="fade-right">FAQ</h2>
+      <div class="faq-item" data-aos="fade-up">
+        <button class="faq-question">What browsers are supported?</button>
+        <div class="faq-answer">Chrome, Edge, and other Chromium-based browsers support all features.</div>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="200">
+        <button class="faq-question">Is it free?</button>
+        <div class="faq-answer">Yes! The tool is completely free and browser-based.</div>
+      </div>
+      <div class="faq-item" data-aos="fade-up" data-aos-delay="400">
+        <button class="faq-question">Can I download my text?</button>
+        <div class="faq-answer">Yes, you can download as TXT or PDF for both Speech-to-Text and Translation.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download CTA Section -->
+  <section class="download-cta" id="download-cta">
+    <div class="container" data-aos="fade-up">
+      <h2>Start Converting & Translating Now!</h2>
+      <p>Free, fast, and professional. Works directly in your browser.</p>
+      <a href="#live-demo" class="btn">Try Live Demo</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <div class="container">
+      <p>Follow us on:</p>
+      <div class="social-links">
+        <a href="#" target="_blank">Twitter</a> | 
+        <a href="#" target="_blank">LinkedIn</a> | 
+        <a href="#" target="_blank">GitHub</a>
+      </div>
+      <p>&copy; 2026 Speech & Translation Tool. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    AOS.init({duration: 1000});
+  </script>
 </body>
 </html>
