@@ -1,85 +1,94 @@
-/* ========= SPEECH TO TEXT ========= */
-let recognition;
-let finalText = "";
-let translating = false;
+/* ================= SPEECH TO TEXT ================= */
 
 const speechText = document.getElementById("speechText");
-const statusText = document.getElementById("status");
+const statusText = document.getElementById("listeningStatus");
 
-if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition;
+let finalTranscript = "";
+
+if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
+
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
   recognition = new SpeechRecognition();
 
-  recognition.continuous = true;
-  recognition.interimResults = true;
+  recognition.continuous = true;      // LONG capture
+  recognition.interimResults = true;  // Smooth flow
   recognition.lang = "en-US";
 
   recognition.onstart = () => {
-    statusText.textContent = "Listening...";
-    statusText.classList.add("listening");
+    statusText.textContent = "🎧 Listening...";
+    statusText.style.color = "green";
   };
 
   recognition.onend = () => {
     statusText.textContent = "Stopped";
-    statusText.classList.remove("listening");
+    statusText.style.color = "red";
   };
 
-  recognition.onresult = async (event) => {
+  recognition.onerror = (e) => {
+    statusText.textContent = "Error: " + e.error;
+    statusText.style.color = "red";
+  };
+
+  recognition.onresult = (event) => {
     let interim = "";
 
     for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
+
       if (event.results[i].isFinal) {
-        finalText += event.results[i][0].transcript + " ";
+        finalTranscript += transcript + " ";
       } else {
-        interim += event.results[i][0].transcript;
+        interim += transcript;
       }
     }
 
-    speechText.value = finalText + interim;
-
-    // 🔁 LIVE TRANSLATION (THROTTLED)
-    if (!translating && speechText.value.trim().length > 5) {
-      translating = true;
-      liveTranslate(speechText.value.trim());
-      setTimeout(() => translating = false, 2000);
-    }
+    speechText.value = finalTranscript + interim;
   };
 }
 
+/* BUTTONS */
 document.getElementById("startSpeech").onclick = () => {
-  finalText = speechText.value || "";
-  recognition.start();
+  try {
+    recognition.start();
+  } catch {}
 };
 
-document.getElementById("stopSpeech").onclick = () => recognition.stop();
+document.getElementById("stopSpeech").onclick = () => {
+  recognition.stop();
+};
 
 document.getElementById("resetSpeech").onclick = () => {
-  finalText = "";
+  finalTranscript = "";
   speechText.value = "";
-  document.getElementById("outputText").value = "";
   statusText.textContent = "Idle";
+  statusText.style.color = "#555";
 };
 
-/* ========= LIVE TRANSLATION FUNCTION ========= */
-async function liveTranslate(text) {
-  const from = document.getElementById("fromLang").value;
-  const to = document.getElementById("toLang").value;
-  const output = document.getElementById("outputText");
+/* ================= TRANSLATION ================= */
+
+document.getElementById("translateBtn").onclick = async () => {
+  const text = inputText.value.trim();
+  if (!text) return alert("Enter text");
+
+  outputText.value = "Translating...";
 
   try {
     const res = await fetch(
-      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${fromLang.value}|${toLang.value}`
     );
     const data = await res.json();
-    output.value = data.responseData.translatedText;
-  } catch {}
-}
+    outputText.value = data.responseData.translatedText;
+  } catch {
+    alert("Translation failed");
+    outputText.value = "";
+  }
+};
 
-/* ========= MANUAL TRANSLATE ========= */
-document.getElementById("translateBtn").onclick = () =>
-  liveTranslate(document.getElementById("inputText").value);
+/* ================= DOWNLOAD ================= */
 
-/* ========= DOWNLOAD ========= */
 function downloadTXT(text, name) {
   if (!text) return alert("Nothing to download");
   const blob = new Blob([text], { type: "text/plain" });
@@ -97,14 +106,7 @@ function downloadPDF(text, name) {
   doc.save(name);
 }
 
-document.getElementById("speechTxt").onclick =
-  () => downloadTXT(speechText.value, "speech.txt");
-
-document.getElementById("speechPdf").onclick =
-  () => downloadPDF(speechText.value, "speech.pdf");
-
-document.getElementById("transTxt").onclick =
-  () => downloadTXT(outputText.value, "translation.txt");
-
-document.getElementById("transPdf").onclick =
-  () => downloadPDF(outputText.value, "translation.pdf");
+speechTxt.onclick = () => downloadTXT(speechText.value, "speech.txt");
+speechPdf.onclick = () => downloadPDF(speechText.value, "speech.pdf");
+transTxt.onclick = () => downloadTXT(outputText.value, "translation.txt");
+transPdf.onclick = () => downloadPDF(outputText.value, "translation.pdf");
