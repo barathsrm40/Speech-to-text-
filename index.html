@@ -6,10 +6,10 @@
 <title>Ultimate Translator & Speech App</title>
 <link rel="stylesheet" href="style.css">
 
-<!-- PDF.js library -->
-<script src="pdf.min.js"></script>
-<!-- html2pdf for download -->
-<script src="html2pdf.bundle.min.js"></script>
+<!-- Libraries via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
 
 </head>
 <body>
@@ -39,7 +39,8 @@
             <button id="clearVoiceBtn">🧹 Clear</button>
         </div>
         <textarea id="voiceOutput" placeholder="Speech text appears here"></textarea>
-        <button onclick="downloadText('voiceOutput', 'speech.txt')">💾 Download TXT</button>
+        <button onclick="downloadText('voiceOutput','speech.txt')">💾 Download TXT</button>
+        <button onclick="downloadPDF('voiceOutput','speech.pdf')">💾 Download PDF</button>
     </div>
 
     <!-- Text Translate Module -->
@@ -51,6 +52,7 @@
         <button onclick="translateTextManual()">Translate</button>
         <textarea id="textTranslated" placeholder="Translated text"></textarea>
         <button onclick="downloadText('textTranslated','translated.txt')">💾 Download TXT</button>
+        <button onclick="downloadPDF('textTranslated','translated.pdf')">💾 Download PDF</button>
     </div>
 
     <!-- PDF Module -->
