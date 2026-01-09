@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Translator & Speech App</title>
+<title>Ultimate Translator App</title>
 <link rel="stylesheet" href="style.css">
 
 <!-- Libraries via CDN -->
@@ -14,67 +14,74 @@
 </head>
 <body>
 
-<!-- Sidebar -->
-<div id="sidebar" class="sidebar">
-    <h2>🛠 Tools</h2>
-    <button onclick="showModule('voice')">🎤 Voice to Text</button>
-    <button onclick="showModule('translate')">🌐 Translate Text</button>
-    <button onclick="showModule('pdf')">📄 PDF Translate</button>
-    <button onclick="showModule('images')">🖼 Image Translate</button>
+<!-- Home Page -->
+<div id="homePage" class="page">
+    <h1>🌍 Ultimate Translator</h1>
+    <p>Select a tool:</p>
+    <div class="card-container">
+        <div class="card" onclick="openModule('voice')">
+            🎤<h3>Voice to Text</h3>
+        </div>
+        <div class="card" onclick="openModule('text')">
+            🌐<h3>Text Translation</h3>
+        </div>
+        <div class="card" onclick="openModule('pdf')">
+            📄<h3>PDF Translation</h3>
+        </div>
+        <div class="card" onclick="openModule('image')">
+            🖼<h3>Image Translation</h3>
+        </div>
+    </div>
 </div>
 
-<!-- Bar icon -->
-<div id="barIcon" onclick="toggleSidebar()">☰</div>
-
-<!-- Main content -->
-<div class="main" id="mainContent">
-
-    <!-- Voice Module -->
-    <div id="voiceModule" class="module">
-        <h1>🎤 Voice to Text</h1>
-        <select id="voiceLang"></select>
-        <div class="buttons">
-            <button id="startVoiceBtn">▶ Start</button>
-            <button id="stopVoiceBtn" disabled>⏹ Stop</button>
-            <button id="clearVoiceBtn">🧹 Clear</button>
-        </div>
-        <textarea id="voiceOutput" placeholder="Speech text appears here"></textarea>
-        <button onclick="downloadText('voiceOutput','speech.txt')">💾 Download TXT</button>
-        <button onclick="downloadPDF('voiceOutput','speech.pdf')">💾 Download PDF</button>
+<!-- Voice Module -->
+<div id="voiceModule" class="page" style="display:none;">
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+    <h1>🎤 Voice to Text</h1>
+    <select id="voiceLang"></select>
+    <div class="buttons">
+        <button id="startVoiceBtn">▶ Start</button>
+        <button id="stopVoiceBtn" disabled>⏹ Stop</button>
+        <button id="clearVoiceBtn">🧹 Clear</button>
     </div>
+    <textarea id="voiceOutput" placeholder="Speech text appears here"></textarea>
+    <button onclick="downloadText('voiceOutput','speech.txt')">💾 Download TXT</button>
+    <button onclick="downloadPDF('voiceOutput','speech.pdf')">💾 Download PDF</button>
+</div>
 
-    <!-- Text Translate Module -->
-    <div id="translateModule" class="module" style="display:none;">
-        <h1>🌐 Translate Text</h1>
-        <textarea id="textInput" placeholder="Enter text to translate"></textarea>
-        <select id="translateFrom"></select>
-        <select id="translateTo"></select>
-        <button onclick="translateTextManual()">Translate</button>
-        <textarea id="textTranslated" placeholder="Translated text"></textarea>
-        <button onclick="downloadText('textTranslated','translated.txt')">💾 Download TXT</button>
-        <button onclick="downloadPDF('textTranslated','translated.pdf')">💾 Download PDF</button>
-    </div>
+<!-- Text Module -->
+<div id="textModule" class="page" style="display:none;">
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+    <h1>🌐 Text Translation</h1>
+    <textarea id="textInput" placeholder="Enter text to translate"></textarea>
+    <select id="translateFrom"></select>
+    <select id="translateTo"></select>
+    <button onclick="translateTextManual()">Translate</button>
+    <textarea id="textTranslated" placeholder="Translated text"></textarea>
+    <button onclick="downloadText('textTranslated','translated.txt')">💾 Download TXT</button>
+    <button onclick="downloadPDF('textTranslated','translated.pdf')">💾 Download PDF</button>
+</div>
 
-    <!-- PDF Module -->
-    <div id="pdfModule" class="module" style="display:none;">
-        <h1>📄 PDF Translator</h1>
-        <input type="file" id="pdfFile" accept="application/pdf">
-        <button onclick="translatePDF()">Translate PDF</button>
-        <textarea id="pdfOutput" placeholder="Translated PDF text"></textarea>
-        <button onclick="downloadText('pdfOutput','pdf_translated.txt')">💾 Download TXT</button>
-        <button onclick="downloadPDF('pdfOutput','pdf_translated.pdf')">💾 Download PDF</button>
-    </div>
+<!-- PDF Module -->
+<div id="pdfModule" class="page" style="display:none;">
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+    <h1>📄 PDF Translation</h1>
+    <input type="file" id="pdfFile" accept="application/pdf">
+    <button onclick="translatePDF()">Translate PDF</button>
+    <textarea id="pdfOutput" placeholder="Translated PDF text"></textarea>
+    <button onclick="downloadText('pdfOutput','pdf_translated.txt')">💾 Download TXT</button>
+    <button onclick="downloadPDF('pdfOutput','pdf_translated.pdf')">💾 Download PDF</button>
+</div>
 
-    <!-- Image Module -->
-    <div id="imageModule" class="module" style="display:none;">
-        <h1>🖼 Image Translator</h1>
-        <input type="file" id="imgFile" accept="image/*">
-        <button onclick="translateImage()">Translate Image</button>
-        <textarea id="imgOutput" placeholder="Translated image text"></textarea>
-        <button onclick="downloadText('imgOutput','image_translated.txt')">💾 Download TXT</button>
-        <button onclick="downloadPDF('imgOutput','image_translated.pdf')">💾 Download PDF</button>
-    </div>
-
+<!-- Image Module -->
+<div id="imageModule" class="page" style="display:none;">
+    <button class="backBtn" onclick="goHome()">⬅ Back</button>
+    <h1>🖼 Image Translation</h1>
+    <input type="file" id="imgFile" accept="image/*">
+    <button onclick="translateImage()">Translate Image</button>
+    <textarea id="imgOutput" placeholder="Translated image text"></textarea>
+    <button onclick="downloadText('imgOutput','image_translated.txt')">💾 Download TXT</button>
+    <button onclick="downloadPDF('imgOutput','image_translated.pdf')">💾 Download PDF</button>
 </div>
 
 <script src="script.js"></script>
