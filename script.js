@@ -5,6 +5,7 @@ const statusText = document.getElementById("listeningStatus");
 
 let recognition;
 let finalTranscript = "";
+let isUserStopped = false;
 
 if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
 
@@ -13,8 +14,8 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
 
   recognition = new SpeechRecognition();
 
-  recognition.continuous = true;      // LONG capture
-  recognition.interimResults = true;  // Smooth flow
+  recognition.continuous = true;
+  recognition.interimResults = true;
   recognition.lang = "en-US";
 
   recognition.onstart = () => {
@@ -23,17 +24,21 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
   };
 
   recognition.onend = () => {
-    statusText.textContent = "Stopped";
-    statusText.style.color = "red";
+    // 🔁 Auto restart ONLY if user didn't stop
+    if (!isUserStopped) {
+      recognition.start();
+    } else {
+      statusText.textContent = "Stopped";
+      statusText.style.color = "red";
+    }
   };
 
   recognition.onerror = (e) => {
-    statusText.textContent = "Error: " + e.error;
-    statusText.style.color = "red";
+    console.warn("Speech error:", e.error);
   };
 
   recognition.onresult = (event) => {
-    let interim = "";
+    let interimText = "";
 
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const transcript = event.results[i][0].transcript;
@@ -41,22 +46,28 @@ if ("webkitSpeechRecognition" in window || "SpeechRecognition" in window) {
       if (event.results[i].isFinal) {
         finalTranscript += transcript + " ";
       } else {
-        interim += transcript;
+        interimText = transcript;
       }
     }
 
-    speechText.value = finalTranscript + interim;
+    // ✅ No duplication
+    speechText.value = finalTranscript + interimText;
   };
 }
 
 /* BUTTONS */
+
 document.getElementById("startSpeech").onclick = () => {
+  if (!recognition) return alert("Speech not supported");
+
+  isUserStopped = false;
   try {
     recognition.start();
   } catch {}
 };
 
 document.getElementById("stopSpeech").onclick = () => {
+  isUserStopped = true;
   recognition.stop();
 };
 
@@ -67,7 +78,7 @@ document.getElementById("resetSpeech").onclick = () => {
   statusText.style.color = "#555";
 };
 
-/* ================= TRANSLATION ================= */
+/* ================= TRANSLATION (UNCHANGED) ================= */
 
 document.getElementById("translateBtn").onclick = async () => {
   const text = inputText.value.trim();
